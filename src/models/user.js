@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
             email: {
                 type: DataTypes.STRING,
                 allowNull: false,
+			},
+			telephone: {
+                type: DataTypes.STRING,
+				allowNull: false,
+			},
+			cpf_cnpj: {
+                type: DataTypes.STRING,
+				allowNull: false,
             },
             password: {
                 type: DataTypes.STRING,
@@ -17,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             pending: {
                 type: DataTypes.BOOLEAN,
 				allowNull: false,
-				defaultValue: false,
             },
         },
         {

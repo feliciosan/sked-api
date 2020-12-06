@@ -46,14 +46,13 @@ const signUp = async ({ meta, data }) => {
     data.password = await bcrypt.hash(data.password, 10);
 
     const user = await UserDao.create(data);
-    const token = getSignedToken(user.id);
 
-    const account = await AccountDao.create({
+    await AccountDao.create({
         name: meta.account,
         user_id: user.id,
     });
 
-    return { token, account };
+    return true;
 };
 
 module.exports = {

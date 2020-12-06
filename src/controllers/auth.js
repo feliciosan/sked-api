@@ -27,6 +27,8 @@ const signUp = async (req, res) => {
             data: {
                 name: req.body.name,
                 email: req.body.email,
+                telephone: req.body.telephone,
+                cpf_cnpj: req.body.cpf_cnpj,
                 password: req.body.password,
                 pending: true,
             },

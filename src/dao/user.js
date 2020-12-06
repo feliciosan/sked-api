@@ -11,14 +11,14 @@ const find = (filter, options = {}) => {
     return User.findOne(query);
 };
 
-const count = (userFilter) => {
+const count = (filter) => {
     return User.count({
-        where: userFilter,
+        where: filter,
     });
 };
 
-const create = (userBody) => {
-    return User.create(userBody);
+const create = (data) => {
+    return User.create(data);
 };
 
 module.exports = {
