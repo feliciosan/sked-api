@@ -103,25 +103,99 @@ const findCustomerSchedules = async ({ filter, meta }) => {
 };
 
 const updateStatus = async ({ filter, meta }) => {
-	const changes = {}
-
 	if (meta.status === 'CANCELED') {
-		filter.finished_at = null;
-		changes.canceled_at = moment().format();
+		return await updateStatusCanceled(filter);
 	}
 
 	if (meta.status === 'FINISHED') {
-		filter.canceled_at = null;
-		changes.finished_at = moment().format();
+		return await updateStatusFinished(filter);
 	}
 
 	if (meta.status === 'CONFIRMED') {
-		filter.canceled_at = null;
-		filter.finished_at = null;
-		changes.confirmed_at = moment().format();
+		return await updateStatusConfirmed(filter);
 	}
 
-    await ScheduleDao.update(filter, changes);
+    throw handleException('STATUS_NOT_FOUND');
+};
+
+const updateStatusCanceled = async (filter) => {
+	const changes = {
+		canceled_at: moment().format(),
+	};
+
+	const isFinished = await ScheduleDao.count({
+		finished_at: {
+			[Op.ne]: null,
+		},
+		...filter,
+	});
+
+	if (isFinished) {
+		throw handleException('SCHEDULE_FINISHED');
+	}
+
+    await ScheduleDao.update({
+		canceled_at: null,
+		finished_at: null,
+		...filter,
+	}, changes);
+
+    return true;
+};
+
+const updateStatusFinished = async (filter) => {
+	const changes = {
+		finished_at: moment().format(),
+	};
+
+	const isCanceled = await ScheduleDao.count({
+		canceled_at: {
+			[Op.ne]: null,
+		},
+		...filter,
+	});
+
+	if (isCanceled) {
+		throw handleException('SCHEDULE_CANCELED');
+	}
+
+	await ScheduleDao.update({
+		finished_at: null,
+		canceled_at: null,
+		...filter
+	}, changes);
+
+    return true;
+};
+
+const updateStatusConfirmed = async (filter) => {
+	const changes = {
+		confirmed_at: moment().format(),
+	};
+
+	const isCanceledOrFinished= await ScheduleDao.count({
+		[Op.or]: [{
+			canceled_at: {
+				[Op.ne]: null,
+			},
+		}, {
+			finished_at: {
+				[Op.ne]: null,
+			},
+		}],
+		...filter,
+	});
+
+	if (isCanceledOrFinished) {
+		throw handleException('SCHEDULE_CANCELED_OR_FINISHED');
+	}
+
+	await ScheduleDao.update({
+		canceled_at: null,
+		finished_at: null,
+		confirmed_at: null,
+		...filter
+	}, changes);
 
     return true;
 };
@@ -129,6 +203,9 @@ const updateStatus = async ({ filter, meta }) => {
 module.exports = {
     create,
     findAll,
-    findCustomerSchedules,
-    updateStatus,
+	findCustomerSchedules,
+	updateStatusCanceled,
+	updateStatusFinished,
+	updateStatusConfirmed,
+	updateStatus,
 };

@@ -9,17 +9,17 @@ const signIn = async ({ filter, meta }) => {
 	});
 
     if (!user) {
-        throw handleException('INVALID_CREDENTIALS', 400);
+        throw handleException('INVALID_CREDENTIALS');
 	}
 
 	if (user.pending) {
-        throw handleException('PENDING_CREDENTIALS', 400);
+        throw handleException('PENDING_CREDENTIALS');
     }
 
     const match = await bcrypt.compare(meta.password, user.password);
 
     if (!match) {
-        throw handleException('INVALID_CREDENTIALS', 400);
+        throw handleException('INVALID_CREDENTIALS');
     }
 
     const token = getSignedToken(user.id);
@@ -32,7 +32,7 @@ const signUp = async ({ meta, data }) => {
     const userExists = await UserDao.count({ email: data.email });
 
     if (userExists) {
-        throw handleException('EMAIL_ALREADY_IN_USE', 409);
+        throw handleException('EMAIL_ALREADY_IN_USE');
     }
 
     const accountExists = await AccountDao.count({
@@ -40,7 +40,7 @@ const signUp = async ({ meta, data }) => {
     });
 
     if (accountExists) {
-        throw handleException('ACCOUNT_ALREADY_IN_USE', 409);
+        throw handleException('ACCOUNT_ALREADY_IN_USE');
     }
 
     data.password = await bcrypt.hash(data.password, 10);

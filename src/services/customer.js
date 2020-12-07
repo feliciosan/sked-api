@@ -6,13 +6,13 @@ const signIn = async ({ filter, meta }) => {
     const user = await customerDao.find(filter);
 
     if (!user) {
-        throw handleException('INVALID_CREDENTIALS', 400);
+        throw handleException('INVALID_CREDENTIALS');
     }
 
     const match = await bcrypt.compare(meta.password, user.password);
 
     if (!match) {
-        throw handleException('INVALID_CREDENTIALS', 400);
+        throw handleException('INVALID_CREDENTIALS');
     }
 
     const token = getSignedToken(user.id);
@@ -24,7 +24,7 @@ const signUp = async ({ data }) => {
     const userExists = await customerDao.count({ email: data.email });
 
     if (userExists) {
-        throw handleException('EMAIL_ALREADY_IN_USE', 409);
+        throw handleException('EMAIL_ALREADY_IN_USE');
     }
 
     data.password = await bcrypt.hash(data.password, 10);
