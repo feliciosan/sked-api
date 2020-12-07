@@ -26,7 +26,9 @@ const auth = async (req, res, next) => {
 
         const account = await AccountDao.find({
             user_id: user.id,
-        });
+        }, {
+			attributes: ['id']
+		});
 
         req.user = {
             id: user.id,

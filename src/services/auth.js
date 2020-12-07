@@ -23,7 +23,11 @@ const signIn = async ({ filter, meta }) => {
     }
 
     const token = getSignedToken(user.id);
-    const account = await AccountDao.find({ user_id: user.id });
+    const account = await AccountDao.find({
+		user_id: user.id
+	}, {
+		attributes: ['id', 'name']
+	});
 
     return { token, account };
 };

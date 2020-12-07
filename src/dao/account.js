@@ -1,20 +1,14 @@
 const sequelize = require('../db');
 const Account = sequelize.model('account');
-const User = sequelize.model('user');
 
-const find = (filter) => {
-    return Account.findOne({
+const find = (filter, options = {}) => {
+	const query = {
         where: filter,
-        include: [
-            {
-                model: User,
-                attributes: ['name'],
-            },
-        ],
-        attributes: ['id', 'name'],
-        raw: true,
-        nest: true,
-    });
+		raw: true,
+        ...options,
+	};
+
+    return Account.findOne(query);
 };
 
 const count = (filter) => {

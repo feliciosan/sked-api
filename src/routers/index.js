@@ -10,6 +10,7 @@ const TimegridRouter = require('./timegrid');
 const ScheduleRouter = require('./schedule');
 const CustomerRouter = require('./customer');
 const ServiceRouter = require('./service');
+const UserRouter = require('./user');
 
 const routes = (app) => {
     app.use(AuthRouter(router));
@@ -18,6 +19,7 @@ const routes = (app) => {
     app.use(TimegridRouter(router, userMiddleware.auth));
     app.use(ScheduleRouter(router, customerMiddleware.auth, userMiddleware.auth));
     app.use(ServiceRouter(router, userMiddleware.auth));
+    app.use(UserRouter(router, userMiddleware.auth));
 };
 
 module.exports = routes;

@@ -2,11 +2,13 @@ const sequelize = require('../db');
 const AccountDao = require('../dao/account');
 const User = sequelize.model('user');
 
-const find = async ({ filter }) => {
-    const account = await AccountDao.find(filter, {
+const profile = async ({ filter }) => {
+    const account = await AccountDao.find({
+		user_id: filter.id
+	}, {
 		include: [{
 			model: User,
-			attributes: ['name'],
+			attributes: ['id', 'telephone', 'cpf_cnpj', 'email', 'name'],
 		}],
 		attributes: ['id', 'name'],
 		nest: true,
@@ -16,5 +18,5 @@ const find = async ({ filter }) => {
 };
 
 module.exports = {
-    find: find,
+    profile,
 };
