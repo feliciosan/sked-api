@@ -17,6 +17,15 @@ const count = (filter) => {
     });
 };
 
+const update = (filter, changes, options = {}) => {
+    const query = {
+		where: filter,
+        ...options,
+    };
+
+    return User.update(changes, query);
+};
+
 const create = (data) => {
     return User.create(data);
 };
@@ -24,5 +33,6 @@ const create = (data) => {
 module.exports = {
     find,
     create,
-    count,
+	count,
+	update,
 };

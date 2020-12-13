@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            address: {
+                type: DataTypes.TEXT
+            },
         },
         {
             timestamps: true,

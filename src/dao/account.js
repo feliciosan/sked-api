@@ -21,8 +21,18 @@ const create = (data) => {
     return Account.create(data);
 };
 
+const update = (filter, changes, options = {}) => {
+    const query = {
+		where: filter,
+        ...options,
+    };
+
+    return Account.update(changes, query);
+};
+
 module.exports = {
     find,
     create,
-    count,
+	count,
+	update,
 };
