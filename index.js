@@ -12,7 +12,7 @@ const initDatabase = async () => {
         await db.authenticate();
 
         // db.sync();
-        // db.sync({ alter: true });
+        db.sync({ alter: true });
         // db.sync({ force: true });
 
         console.log('Database connected.');

@@ -4,11 +4,11 @@ module.exports = {
         secret_key: process.env.API_SECRET_KEY,
     },
     db: {
-        name: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        host: process.env.DB_HOST,
-        dialect: process.env.DB_DIALECT,
-        port: process.env.DB_PORT,
+        name: process.env.DATABASE_NAME,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        host: process.env.DATABASE_URL,
+        dialect: process.env.DATABASE_DIALECT,
+        port: process.env.DATABASE_PORT,
     },
 };
