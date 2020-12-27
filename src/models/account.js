@@ -6,9 +6,20 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            url: {
+                type: DataTypes.STRING,
+                allowNull: false,
+			},
+			cpf_cnpj: {
+                type: DataTypes.STRING,
+				allowNull: false,
+            },
             address: {
                 type: DataTypes.TEXT
-            },
+			},
+			telephone: {
+                type: DataTypes.STRING,
+			},
         },
         {
             timestamps: true,
@@ -18,11 +29,6 @@ module.exports = (sequelize, DataTypes) => {
             paranoid: true,
         }
     );
-
-    Account.belongsTo(sequelize.models.user, {
-        foreignKey: 'user_id',
-        allowNull: false,
-    });
 
     return Account;
 };

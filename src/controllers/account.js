@@ -5,7 +5,7 @@ const find = async (req, res) => {
     try {
         const params = {
             filter: {
-                name: req.query.account,
+                url: req.params.account,
             },
         };
 

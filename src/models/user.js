@@ -10,19 +10,18 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
 			},
-			telephone: {
+			cpf: {
                 type: DataTypes.STRING,
-				allowNull: false,
-			},
-			cpf_cnpj: {
-                type: DataTypes.STRING,
-				allowNull: false,
             },
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             pending: {
+                type: DataTypes.BOOLEAN,
+				allowNull: false,
+			},
+			is_root: {
                 type: DataTypes.BOOLEAN,
 				allowNull: false,
             },
@@ -34,7 +33,12 @@ module.exports = (sequelize, DataTypes) => {
             deletedAt: 'deleted_at',
             paranoid: true,
         }
-    );
+	);
+
+	User.belongsTo(sequelize.models.account, {
+        foreignKey: 'account_id',
+		allowNull: false,
+    });
 
     return User;
 };

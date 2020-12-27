@@ -1,7 +1,10 @@
 const ServiceService = require('../services/service');
 const { handleResponse, handleError } = require('../utils');
+const sequelize = require('../db');
 
 const create = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             data: {
@@ -11,33 +14,47 @@ const create = async (req, res) => {
 				account_id: req.user.account_id,
 				show_price: req.body.show_price || false,
                 price: req.body.price || 0,
-            },
-        };
+			},
+			transaction
+		};
 
-        handleResponse(res, 201, await ServiceService.create(params));
+		const response = await ServiceService.create(params);
+		await transaction.commit();
+
+        handleResponse(res, 201, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
 
 const remove = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             filter: {
                 id: req.params.id,
                 user_id: req.user.id,
                 account_id: req.user.account_id,
-            },
-        };
+			},
+			transaction
+		};
 
-        handleResponse(res, 200, await ServiceService.remove(params));
+		const response = await ServiceService.remove(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
 
 const update = async (req, res) => {
-    try {
+	const transaction = await sequelize.transaction();
+
+	try {
         const params = {
             filter: {
                 id: req.params.id,
@@ -49,11 +66,16 @@ const update = async (req, res) => {
                 duration: req.body.duration,
                 show_price: req.body.show_price || false,
                 price: req.body.price || 0,
-			}
-        };
+			},
+			transaction
+		};
 
-        handleResponse(res, 200, await ServiceService.update(params));
+		const response = await ServiceService.update(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
@@ -63,6 +85,7 @@ const findAll = async (req, res) => {
         const params = {
             filter: {
                 account_id: req.user.account_id,
+                user_id: req.user.id,
             },
         };
 
@@ -72,15 +95,16 @@ const findAll = async (req, res) => {
     }
 };
 
-const findAllById = async (req, res) => {
+const findAllByAccountId = async (req, res) => {
     try {
         const params = {
             filter: {
                 account_id: req.query.account_id,
+                user_id: req.query.user_id,
             },
         };
 
-        handleResponse(res, 200, await ServiceService.findAllById(params));
+        handleResponse(res, 200, await ServiceService.findAllByAccountId(params));
     } catch (error) {
         handleError(res, error);
     }
@@ -91,5 +115,5 @@ module.exports = {
 	remove,
 	update,
     findAll,
-    findAllById,
+    findAllByAccountId,
 };

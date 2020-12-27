@@ -1,19 +1,19 @@
 const ServiceDao = require('../dao/service');
 
-const create = async ({ data }) => {
-    await ServiceDao.create(data);
+const create = async ({ data, transaction }) => {
+    await ServiceDao.create(data, { transaction });
 
     return true;
 };
 
-const update = async ({ filter, changes }) => {
-    await ServiceDao.update(filter, changes);
+const update = async ({ filter, changes, transaction }) => {
+    await ServiceDao.update(filter, changes, { transaction });
 
     return true;
 };
 
-const remove = async ({ filter }) => {
-    await ServiceDao.remove(filter);
+const remove = async ({ filter, transaction }) => {
+    await ServiceDao.remove(filter, { transaction });
 
     return true;
 };
@@ -27,7 +27,7 @@ const findAll = async ({ filter }) => {
     return { services };
 };
 
-const findAllById = async ({ filter }) => {
+const findAllByAccountId = async ({ filter }) => {
     const servicesResult = await ServiceDao.findAll(filter);
     const services = {};
 
@@ -43,5 +43,5 @@ module.exports = {
 	update,
     remove,
     findAll,
-    findAllById,
+    findAllByAccountId,
 };

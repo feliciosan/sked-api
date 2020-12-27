@@ -1,8 +1,8 @@
 const sequelize = require('../db');
 const Schedule = sequelize.model('schedule');
 
-const create = (data) => {
-    return Schedule.create(data);
+const create = (data, options = {}) => {
+    return Schedule.create(data, options);
 };
 
 const findAll = (filter, options = {}) => {

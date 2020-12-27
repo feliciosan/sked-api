@@ -11,14 +11,17 @@ const find = (filter, options = {}) => {
     return Account.findOne(query);
 };
 
-const count = (filter) => {
-    return Account.count({
-        where: filter,
-    });
+const count = (filter, options = {}) => {
+	const query = {
+		where: filter,
+        ...options,
+	};
+
+    return Account.count(query);
 };
 
-const create = (data) => {
-    return Account.create(data);
+const create = (data, options = {}) => {
+    return Account.create(data, options);
 };
 
 const update = (filter, changes, options = {}) => {

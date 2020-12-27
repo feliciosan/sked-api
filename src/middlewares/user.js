@@ -17,23 +17,14 @@ const auth = async (req, res, next) => {
         const user = await UserDao.find({
             id: data.id,
         }, {
-			attributes: ['id']
+			attributes: ['id', 'account_id']
 		});
 
         if (!user) {
             throw handleException('NOT_AUTHORIZED', 401);
         }
 
-        const account = await AccountDao.find({
-            user_id: user.id,
-        }, {
-			attributes: ['id']
-		});
-
-        req.user = {
-            id: user.id,
-            account_id: account.id,
-        };
+        req.user = user;
 
         return next();
     } catch (error) {

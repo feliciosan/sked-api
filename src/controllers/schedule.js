@@ -1,8 +1,11 @@
 const moment = require('moment');
 const ScheduleService = require('../services/schedule');
 const { handleResponse, handleError } = require('../utils');
+const sequelize = require('../db');
 
 const create = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             data: {
@@ -11,12 +14,18 @@ const create = async (req, res) => {
                 end: req.body.end,
                 account_id: req.body.account_id,
                 service_id: req.body.service_id,
+                user_id: req.body.user_id,
                 customer_id: req.customer.id,
 			},
+			transaction
 		};
 
-        handleResponse(res, 200, await ScheduleService.create(params));
+		const response = await ScheduleService.create(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
@@ -25,7 +34,7 @@ const findAll = async (req, res) => {
     try {
         const params = {
             filter: {
-                account_id: req.user.account_id,
+                user_id: req.user.id,
 				date: req.query.date,
 			},
 			meta: {
@@ -58,6 +67,8 @@ const findCustomerSchedules = async (req, res) => {
 };
 
 const updateStatus = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             filter: {
@@ -67,15 +78,22 @@ const updateStatus = async (req, res) => {
 			meta: {
 				status: req.body.status
 			},
+			transaction
 		};
 
-        handleResponse(res, 200, await ScheduleService.updateStatus(params));
+		const response = await ScheduleService.updateStatus(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
 
 const updateStatusFromCostumer = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             filter: {
@@ -85,10 +103,15 @@ const updateStatusFromCostumer = async (req, res) => {
 			meta: {
 				status: req.body.status
 			},
+			transaction
 		};
 
-        handleResponse(res, 200, await ScheduleService.updateStatus(params));
+		const response = await ScheduleService.updateStatus(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };

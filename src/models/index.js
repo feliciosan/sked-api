@@ -5,11 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     const ScheduleModel = require('./schedule');
     const CustomerModel = require('./customer');
     const ServiceModel = require('./service');
+    const RecoverPasswordModel = require('./recover-password');
 
-    UserModel(sequelize, DataTypes);
     AccountModel(sequelize, DataTypes);
+    UserModel(sequelize, DataTypes);
     CustomerModel(sequelize, DataTypes);
     TimegridModel(sequelize, DataTypes);
     ServiceModel(sequelize, DataTypes);
 	ScheduleModel(sequelize, DataTypes);
+	RecoverPasswordModel(sequelize, DataTypes);
 };

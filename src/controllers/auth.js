@@ -1,5 +1,6 @@
 const AuthService = require('../services/auth');
 const { handleResponse, handleError } = require('../utils');
+const sequelize = require('../db');
 
 const signIn = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ const signIn = async (req, res) => {
             },
             meta: {
                 password: req.body.password,
-            },
+			}
         };
 
         handleResponse(res, 200, await AuthService.signIn(params));
@@ -19,28 +20,89 @@ const signIn = async (req, res) => {
 };
 
 const signUp = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
+    try {
+		const user = req.body.user;
+		const account = req.body.account;
+        const params = {
+			account: {
+				name: account.name,
+				url: account.url,
+				cpf_cnpj: account.cpf_cnpj,
+				telephone: account.telephone,
+			},
+			user: {
+				name: user.name,
+				email: user.email,
+				password: user.password,
+				pending: true,
+				is_root: true,
+			},
+			transaction
+		};
+
+		const response = await AuthService.signUp(params);
+		await transaction.commit();
+
+        handleResponse(res, 201, response);
+    } catch (error) {
+		await transaction.rollback();
+        handleError(res, error);
+    }
+};
+
+const recoverPassword = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
-            meta: {
-                account: req.body.account,
-            },
-            data: {
-                name: req.body.name,
-                email: req.body.email,
-                telephone: req.body.telephone,
-                cpf_cnpj: req.body.cpf_cnpj,
-                password: req.body.password,
-                pending: true,
-            },
-        };
+            filter: {
+				email: req.body.email,
+			},
+			meta: {
+				is_customer: req.body.is_customer,
+			},
+			transaction
+		};
 
-        handleResponse(res, 201, await AuthService.signUp(params));
+		const response = await AuthService.recoverPassword(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
     } catch (error) {
+		await transaction.rollback();
+        handleError(res, error);
+    }
+};
+
+const resetPassword = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
+    try {
+        const params = {
+			filter: {
+				token: req.body.token,
+			},
+			changes: {
+				password: req.body.password,
+			},
+			transaction
+		};
+
+		const response = await AuthService.resetPassword(params);
+		await transaction.commit();
+
+        handleResponse(res, 200, response);
+    } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
 
 module.exports = {
     signIn,
-    signUp,
+	signUp,
+	recoverPassword,
+	resetPassword,
 };

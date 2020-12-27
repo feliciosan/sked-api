@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
     });
 
+	Schedule.belongsTo(sequelize.models.user, {
+        foreignKey: 'user_id',
+        allowNull: false,
+    });
+
     Schedule.belongsTo(sequelize.models.customer, {
         foreignKey: 'customer_id',
         allowNull: false,

@@ -15,7 +15,9 @@ const auth = async (req, res, next) => {
         const data = jwt.verify(token, api.secret_key);
         const customer = await CustomerDao.find({
             id: data.id,
-        });
+        }, {
+			attributes: ['id'],
+		});
 
         if (!customer) {
             throw handleException('NOT_AUTHORIZED', 401);

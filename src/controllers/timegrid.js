@@ -1,7 +1,10 @@
 const TimegridService = require('../services/timegrid');
 const { handleResponse, handleError } = require('../utils');
+const sequelize = require('../db');
 
 const set = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             filter: {
@@ -13,11 +16,16 @@ const set = async (req, res) => {
                     user_id: req.user.id,
                     account_id: req.user.account_id,
                 })),
-            },
-        };
+			},
+			transaction
+		};
 
-        handleResponse(res, 201, await TimegridService.set(params));
+		const response = await TimegridService.set(params);
+		await transaction.commit();
+
+        handleResponse(res, 201, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };
@@ -41,7 +49,8 @@ const findByDay = async (req, res) => {
         const params = {
             filter: {
                 account_id: req.query.account_id,
-                date: req.query.date,
+                user_id: req.query.user_id,
+				date: req.query.date,
             },
             meta: {
                 service: {
@@ -49,7 +58,7 @@ const findByDay = async (req, res) => {
                     duration: req.query.service_duration,
                 },
             },
-        };
+		};
 
         handleResponse(res, 200, await TimegridService.findByDay(params));
     } catch (error) {

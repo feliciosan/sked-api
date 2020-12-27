@@ -11,10 +11,23 @@ const find = (filter, options = {}) => {
     return User.findOne(query);
 };
 
-const count = (filter) => {
-    return User.count({
+const findAllByAccountId = (filter, options = {}) => {
+	const query = {
         where: filter,
-    });
+		raw: true,
+        ...options,
+	};
+
+    return User.findAll(query);
+};
+
+const count = (filter, options = {}) => {
+	const query = {
+		where: filter,
+        ...options,
+	};
+
+    return User.count(query);
 };
 
 const update = (filter, changes, options = {}) => {
@@ -26,8 +39,8 @@ const update = (filter, changes, options = {}) => {
     return User.update(changes, query);
 };
 
-const create = (data) => {
-    return User.create(data);
+const create = (data, options = {}) => {
+    return User.create(data, options);
 };
 
 module.exports = {
@@ -35,4 +48,5 @@ module.exports = {
     create,
 	count,
 	update,
+	findAllByAccountId,
 };

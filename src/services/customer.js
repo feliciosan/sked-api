@@ -3,39 +3,41 @@ const bcrypt = require('bcrypt');
 const { handleException, getSignedToken } = require('../utils');
 
 const signIn = async ({ filter, meta }) => {
-    const user = await customerDao.find(filter);
+    const customer = await customerDao.find(filter, {
+		attributes: ['id', 'password'],
+	});
 
-    if (!user) {
+    if (!customer) {
         throw handleException('INVALID_CREDENTIALS');
     }
 
-    const match = await bcrypt.compare(meta.password, user.password);
+    const match = await bcrypt.compare(meta.password, customer.password);
 
     if (!match) {
         throw handleException('INVALID_CREDENTIALS');
     }
 
-    const token = getSignedToken(user.id);
+    const token = getSignedToken(customer.id);
 
     return { token };
 };
 
-const signUp = async ({ data }) => {
-    const userExists = await customerDao.count({ email: data.email });
+const signUp = async ({ data, transaction }) => {
+    const customerExists = await customerDao.count({ email: data.email });
 
-    if (userExists) {
+    if (customerExists) {
         throw handleException('EMAIL_ALREADY_IN_USE');
     }
 
     data.password = await bcrypt.hash(data.password, 10);
 
-    const user = await customerDao.create(data);
-    const token = getSignedToken(user.id);
+    const customer = await customerDao.create(data, { transaction });
+    const token = getSignedToken(customer.id);
 
     return { token };
 };
 
 module.exports = {
-    signIn: signIn,
-    signUp: signUp,
+    signIn,
+    signUp,
 };

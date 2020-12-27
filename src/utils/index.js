@@ -31,6 +31,7 @@ const exceptionMessages = (code) => {
 		STATUS_NOT_FOUND: 'Status não encontrado.',
 		SCHEDULE_FINISHED: 'Este agendamento já foi finalizado.',
 		SCHEDULE_CANCELED: 'Este agendamento já foi cancelado.',
+		RECOVER_UNAVAILABLE: 'Não é mais possível resetar sua senha através deste link.',
 		SCHEDULE_CANCELED_OR_FINISHED: 'Este agendamento já foi cancelado ou finalizado.',
     };
 
@@ -53,10 +54,19 @@ const getSignedToken = (userId) => {
     return jwt.sign({ id: userId }, api.secret_key, { expiresIn: '24h' });
 };
 
+const generateUUID = () => {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+		const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+
+		return v.toString(16);
+	});
+};
+
 module.exports = {
     handleError,
     handleResponse,
     handleException,
     getTimegridStructure,
-    getSignedToken,
+	getSignedToken,
+	generateUUID,
 };

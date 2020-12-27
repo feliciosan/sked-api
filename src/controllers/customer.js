@@ -1,5 +1,6 @@
 const CustomerService = require('../services/customer');
 const { handleResponse, handleError } = require('../utils');
+const sequelize = require('../db');
 
 const signIn = async (req, res) => {
     try {
@@ -10,16 +11,19 @@ const signIn = async (req, res) => {
             meta: {
                 password: req.body.password,
             },
-        };
+		};
 
-        handleResponse(res, 200, await CustomerService.signIn(params));
+		const response = await CustomerService.signIn(params);
+
+        handleResponse(res, 200, response);
     } catch (error) {
-        console.log(error);
         handleError(res, error);
     }
 };
 
 const signUp = async (req, res) => {
+	const transaction = await sequelize.transaction();
+
     try {
         const params = {
             data: {
@@ -27,11 +31,16 @@ const signUp = async (req, res) => {
                 name: req.body.name,
                 telephone: req.body.telephone,
                 password: req.body.password,
-            },
-        };
+			},
+			transaction
+		};
 
-        handleResponse(res, 201, await CustomerService.signUp(params));
+		const response = await CustomerService.signUp(params);
+		await transaction.commit();
+
+        handleResponse(res, 201, response);
     } catch (error) {
+		await transaction.rollback();
         handleError(res, error);
     }
 };

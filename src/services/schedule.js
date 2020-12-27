@@ -22,7 +22,7 @@ const statusFilter = {
 	},
 };
 
-const create = async ({ data }) => {
+const create = async ({ data, transaction }) => {
 	const slotUnavailable = await ScheduleDao.count({
 		[Op.or]: [{
 			start: {
@@ -43,6 +43,7 @@ const create = async ({ data }) => {
 			}
 		}],
 		account_id: data.account_id,
+		user_id: data.user_id,
 		date: data.date,
 		canceled_at: null,
 	});
@@ -54,13 +55,14 @@ const create = async ({ data }) => {
 	const service = await ServiceDao.find({
 		id: data.service_id,
 		account_id: data.account_id,
+		user_id: data.user_id,
 	}, {
 		attributes: ['price']
 	});
 
 	data.price = service.price;
 
-	await ScheduleDao.create(data);
+	await ScheduleDao.create(data, { transaction });
 
     return true;
 };
@@ -89,11 +91,10 @@ const findCustomerSchedules = async ({ filter, meta }) => {
 			attributes: ['name'],
 		}, {
 			model: sequelize.model('account'),
+			attributes: ['name', 'url'],
+		}, {
+			model: sequelize.model('user'),
 			attributes: ['name'],
-			include: [{
-				model: sequelize.model('user'),
-				attributes: ['name'],
-			}],
 		}],
         order: [['start', 'ASC']],
         nest: true,
@@ -102,23 +103,23 @@ const findCustomerSchedules = async ({ filter, meta }) => {
     return { schedules };
 };
 
-const updateStatus = async ({ filter, meta }) => {
+const updateStatus = async ({ filter, meta, transaction }) => {
 	if (meta.status === 'CANCELED') {
-		return await updateStatusCanceled(filter);
+		return await updateStatusCanceled({ filter, transaction});
 	}
 
 	if (meta.status === 'FINISHED') {
-		return await updateStatusFinished(filter);
+		return await updateStatusFinished({ filter, transaction});
 	}
 
 	if (meta.status === 'CONFIRMED') {
-		return await updateStatusConfirmed(filter);
+		return await updateStatusConfirmed({ filter, transaction});
 	}
 
     throw handleException('STATUS_NOT_FOUND');
 };
 
-const updateStatusCanceled = async (filter) => {
+const updateStatusCanceled = async ({ filter, transaction }) => {
 	const changes = {
 		canceled_at: moment().format(),
 	};
@@ -138,7 +139,7 @@ const updateStatusCanceled = async (filter) => {
 		canceled_at: null,
 		finished_at: null,
 		...filter,
-	}, changes);
+	}, changes, { transaction });
 
     return true;
 };

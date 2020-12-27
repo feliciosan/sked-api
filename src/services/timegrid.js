@@ -3,9 +3,12 @@ const TimegridDao = require('../dao/timegrid');
 const ScheduleDao = require('../dao/schedule');
 const { getTimegridStructure } = require('../utils');
 
-const set = async ({ filter, data }) => {
-    await TimegridDao.remove({ user_id: filter.user_id });
-    await TimegridDao.bulk(data.timegrid);
+const set = async ({ filter, data, transaction }) => {
+    await TimegridDao.remove({
+		user_id: filter.user_id
+	}, { transaction });
+
+    await TimegridDao.bulk(data.timegrid, { transaction });
 
     return true;
 };
@@ -22,21 +25,27 @@ const findAll = async ({ filter }) => {
 };
 
 const findByDay = async ({ filter, meta }) => {
-    const timegrid = await TimegridDao.findAll({
-        account_id: filter.account_id,
-        day: moment(filter.date).day(),
-	});
-
-    const schedules = await ScheduleDao.findAll({
+	const timegridFilter = {
 		account_id: filter.account_id,
+		user_id: filter.user_id,
+		day: moment(filter.date).day(),
+	};
+
+	const schedulesFilter = {
+		account_id: filter.account_id,
+		user_id: filter.user_id,
 		date: filter.date,
 		canceled_at: null
-	}, {
+	};
+
+    const timegridPromise = TimegridDao.findAll(timegridFilter);
+    const schedulesPromise = ScheduleDao.findAll(schedulesFilter, {
 		attributes: ['start', 'end'],
 		order: [['start', 'ASC']],
 	});
 
-    const availableTimegrid = getAvailableSlots(timegrid, meta.service, schedules);
+	const [timegridData, schedulesData] = await Promise.all([timegridPromise, schedulesPromise]);
+    const availableTimegrid = getAvailableSlots(timegridData, meta.service, schedulesData);
 
     return { available_timegrid: availableTimegrid };
 };
