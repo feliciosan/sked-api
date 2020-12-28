@@ -6,7 +6,13 @@ const sequelize = new Sequelize(db.name, db.user, db.password, {
     host: db.host,
     dialect: db.dialect,
     port: db.port,
-    logging: false,
+	logging: false,
+	dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
 });
 
 defineModels(sequelize, DataTypes);
