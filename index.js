@@ -30,7 +30,7 @@ const initServer = () => {
 
     setRouters(app);
 
-    app.listen(api.port, () => {
+    app.listen(api.port, api.host, () => {
         console.log(`Server running on port ${api.port}`);
     });
 };

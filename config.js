@@ -1,6 +1,7 @@
 module.exports = {
     api: {
         port: process.env.API_PORT,
+        host: process.env.API_HOST,
         secret_key: process.env.API_SECRET_KEY,
     },
     db: {
