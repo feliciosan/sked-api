@@ -22,17 +22,21 @@ const initDatabase = async () => {
 };
 
 const initServer = () => {
-    const app = express();
+	try {
+		const app = express();
 
-    app.use(helmet());
-    app.use(cors());
-    app.use(express.json());
+		app.use(helmet());
+		app.use(cors());
+		app.use(express.json());
 
-    setRouters(app);
+		setRouters(app);
 
-    app.listen(api.port, () => {
-        console.log(`Server running on port ${api.port}`);
-    });
+		app.listen(api.port, () => {
+			console.log(`Server running on port ${api.port}`);
+		});
+	} catch (error) {
+		console.error('Unable to connect to the server:', error);
+	}
 };
 
 const initApp = async () => {
