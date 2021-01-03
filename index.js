@@ -12,7 +12,7 @@ const initDatabase = async () => {
         await db.authenticate();
 
         // db.sync();
-        db.sync({ alter: true });
+        // db.sync({ alter: true });
         // db.sync({ force: true });
 
         console.log('Database connected.');
@@ -30,7 +30,7 @@ const initServer = () => {
 
     setRouters(app);
 
-    app.listen(api.port, api.host, () => {
+    app.listen(api.port, () => {
         console.log(`Server running on port ${api.port}`);
     });
 };
