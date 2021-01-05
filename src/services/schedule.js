@@ -144,7 +144,7 @@ const updateStatusCanceled = async ({ filter, transaction }) => {
     return true;
 };
 
-const updateStatusFinished = async (filter) => {
+const updateStatusFinished = async ({ filter, transaction }) => {
 	const changes = {
 		finished_at: moment().format(),
 	};
@@ -164,12 +164,12 @@ const updateStatusFinished = async (filter) => {
 		finished_at: null,
 		canceled_at: null,
 		...filter
-	}, changes);
+	}, changes, { transaction });
 
     return true;
 };
 
-const updateStatusConfirmed = async (filter) => {
+const updateStatusConfirmed = async ({ filter, transaction }) => {
 	const changes = {
 		confirmed_at: moment().format(),
 	};
@@ -196,7 +196,7 @@ const updateStatusConfirmed = async (filter) => {
 		finished_at: null,
 		confirmed_at: null,
 		...filter
-	}, changes);
+	}, changes, { transaction });
 
     return true;
 };
