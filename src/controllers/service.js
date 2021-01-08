@@ -1,5 +1,5 @@
 const ServiceService = require('../services/service');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 const sequelize = require('../db');
 
 const create = async (req, res) => {
@@ -24,7 +24,7 @@ const create = async (req, res) => {
         handleResponse(res, 201, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -47,7 +47,7 @@ const remove = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -76,7 +76,7 @@ const update = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -91,7 +91,7 @@ const findAll = async (req, res) => {
 
         handleResponse(res, 200, await ServiceService.findAll(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -106,7 +106,7 @@ const findAllByAccountId = async (req, res) => {
 
         handleResponse(res, 200, await ServiceService.findAllByAccountId(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

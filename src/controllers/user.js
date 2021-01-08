@@ -1,5 +1,5 @@
 const UserService = require('../services/user');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 const sequelize = require('../db');
 
 const profile = async (req, res) => {
@@ -12,7 +12,7 @@ const profile = async (req, res) => {
 
         handleResponse(res, 200, await UserService.profile(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -48,7 +48,7 @@ const updateProfile = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -63,7 +63,7 @@ const findAllByAccountId = async (req, res) => {
 
         handleResponse(res, 200, await UserService.findAllByAccountId(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

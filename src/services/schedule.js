@@ -1,9 +1,10 @@
 const sequelize = require('../db');
 const ScheduleDao = require('../dao/schedule');
 const ServiceDao = require('../dao/service');
+const EmailService = require('./email')();
 const moment = require('moment');
 const { Op } = require('sequelize');
-const { handleException } = require('../utils');
+const { handleException } = require('../utils')();
 
 const statusFilter = {
 	'SCHEDULED': {
@@ -62,7 +63,31 @@ const create = async ({ data, transaction }) => {
 
 	data.price = service.price;
 
-	await ScheduleDao.create(data, { transaction });
+	const schedule = await ScheduleDao.create(data, { transaction });
+	const scheduleData = await ScheduleDao.find({ id: schedule.id }, {
+		include: [{
+			model: sequelize.model('account'),
+			attributes: ['name'],
+		}, {
+			model: sequelize.model('user'),
+			attributes: ['name', 'email'],
+			paranoid: false,
+		}, {
+			model: sequelize.model('customer'),
+			attributes: ['name'],
+			paranoid: false,
+		}, {
+			model: sequelize.model('service'),
+			attributes: ['name'],
+			paranoid: false,
+		}],
+		attributes: ['start', 'end', 'date'],
+		nest: true,
+		raw: true,
+		transaction
+	});
+
+	await EmailService.sendCreateScheduleEmail({ schedule: scheduleData })
 
     return true;
 };

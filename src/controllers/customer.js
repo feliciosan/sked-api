@@ -1,5 +1,5 @@
 const CustomerService = require('../services/customer');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 const sequelize = require('../db');
 
 const signIn = async (req, res) => {
@@ -17,7 +17,7 @@ const signIn = async (req, res) => {
 
         handleResponse(res, 200, response);
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -41,7 +41,7 @@ const signUp = async (req, res) => {
         handleResponse(res, 201, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

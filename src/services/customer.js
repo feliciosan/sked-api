@@ -1,6 +1,6 @@
 const customerDao = require('../dao/customer');
 const bcrypt = require('bcrypt');
-const { handleException, getSignedToken } = require('../utils');
+const { handleException, getSignedToken } = require('../utils')();
 
 const signIn = async ({ filter, meta }) => {
     const customer = await customerDao.find(filter, {

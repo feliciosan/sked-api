@@ -1,5 +1,5 @@
 const AccountService = require('../services/account');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 
 const find = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ const find = async (req, res) => {
 
         handleResponse(res, 200, await AccountService.find(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

@@ -2,9 +2,9 @@ const UserDao = require('../dao/user');
 const CustomerDao = require('../dao/customer');
 const AccountDao = require('../dao/account');
 const RecoverPasswordDao = require('../dao/recover-passord');
+const EmailService = require('./email')();
 const bcrypt = require('bcrypt');
-const { handleException, getSignedToken, generateUUID } = require('../utils');
-const Mailgun = require('mailgun-js');
+const { handleException, getSignedToken, generateUUID } = require('../utils')();
 
 const signIn = async ({ filter, meta }) => {
     const user = await UserDao.find(filter, {
@@ -95,28 +95,12 @@ const recoverPassword = async ({ filter, meta, transaction }) => {
 
 	const recoverResult = await RecoverPasswordDao.create(recoverData, { transaction });
 
-	const mailgun = new Mailgun({
-		apiKey: process.env.MAILGUN_API_KEY,
-		domain: process.env.MAILGUN_DOMAIN,
+	await EmailService.sendRecoverPassordEmail({
+		email: filter.email,
+		customer: customer,
+		user: user,
+		token: recoverResult.token,
 	});
-
-	const emailData = {
-		from: 'Equipe sked <suporte@skedapp.com>',
-		to: filter.email,
-		subject: 'Recuperar senha | Sked App',
-		html: `
-			<div>
-				<strong>Caro(a) ${((user && user.name) || (customer && customer.name) )}</strong>
-			</div>
-			<p>Você solicitou a recuperação de senha de acesso ao Sked App.</p>
-			<p>Clique no link abaixo para cadastrar a nova senha.</p>
-			<a href="${process.env.CLIENT_URL}/reset-password/${recoverResult.token}" target="_blank">
-				Recuperar minha senha.
-			</a>
-		`,
-	};
-
-	await mailgun.messages().send(emailData);
 
 	return true;
 };

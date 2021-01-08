@@ -1,6 +1,6 @@
 const moment = require('moment');
 const ScheduleService = require('../services/schedule');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 const sequelize = require('../db');
 
 const create = async (req, res) => {
@@ -26,7 +26,7 @@ const create = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -44,7 +44,7 @@ const findAll = async (req, res) => {
 
         handleResponse(res, 200, await ScheduleService.findAll(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -62,7 +62,7 @@ const findCustomerSchedules = async (req, res) => {
 
         handleResponse(res, 200, await ScheduleService.findCustomerSchedules(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -87,7 +87,7 @@ const updateStatus = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -112,7 +112,7 @@ const updateStatusFromCostumer = async (req, res) => {
         handleResponse(res, 200, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

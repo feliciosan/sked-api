@@ -1,5 +1,5 @@
 const TimegridService = require('../services/timegrid');
-const { handleResponse, handleError } = require('../utils');
+const { handleResponse, handleError } = require('../utils')();
 const sequelize = require('../db');
 
 const set = async (req, res) => {
@@ -26,7 +26,7 @@ const set = async (req, res) => {
         handleResponse(res, 201, response);
     } catch (error) {
 		await transaction.rollback();
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -40,7 +40,7 @@ const findAll = async (req, res) => {
 
         handleResponse(res, 200, await TimegridService.findAll(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 
@@ -62,7 +62,7 @@ const findByDay = async (req, res) => {
 
         handleResponse(res, 200, await TimegridService.findByDay(params));
     } catch (error) {
-        handleError(res, error);
+        handleError(req, res, error);
     }
 };
 

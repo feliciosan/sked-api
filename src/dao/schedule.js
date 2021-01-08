@@ -33,9 +33,20 @@ const update = (filter, changes, options = {}) => {
     return Schedule.update(changes, query);
 };
 
+const find = (filter, options = {}) => {
+	const query = {
+        where: filter,
+		raw: true,
+        ...options,
+    };
+
+    return Schedule.findOne(query);
+};
+
 module.exports = {
     create,
     findAll,
 	count,
 	update,
+	find,
 };
