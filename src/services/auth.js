@@ -2,7 +2,7 @@ const UserDao = require('../dao/user');
 const CustomerDao = require('../dao/customer');
 const AccountDao = require('../dao/account');
 const RecoverPasswordDao = require('../dao/recover-passord');
-const EmailService = require('./email')();
+// const EmailService = require('./email')();
 const bcrypt = require('bcrypt');
 const { handleException, getSignedToken, generateUUID } = require('../utils')();
 
@@ -93,14 +93,14 @@ const recoverPassword = async ({ filter, meta, transaction }) => {
 		recoverData.user_id = user.id;
 	}
 
-	const recoverResult = await RecoverPasswordDao.create(recoverData, { transaction });
+	await RecoverPasswordDao.create(recoverData, { transaction });
 
-	await EmailService.sendRecoverPassordEmail({
-		email: filter.email,
-		customer: customer,
-		user: user,
-		token: recoverResult.token,
-	});
+	// await EmailService.sendRecoverPassordEmail({
+	// 	email: filter.email,
+	// 	customer: customer,
+	// 	user: user,
+	// 	token: recoverResult.token,
+	// });
 
 	return true;
 };

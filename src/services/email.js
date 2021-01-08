@@ -104,9 +104,10 @@ module.exports = () => {
 			`,
 		});
 	};
+
 	return {
 		sendRecoverPassordEmail,
 		sendCreateScheduleEmail,
 		sendLogEmail,
-	};
+	}
 };

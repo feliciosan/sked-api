@@ -1,5 +1,5 @@
 module.exports = () => {
-	const EmailService = require('../services/email');
+	// const EmailService = require('../services/email');
 	const jwt = require('jsonwebtoken');
 	const moment = require('moment');
 	const { api } = require('../../config');
@@ -11,9 +11,9 @@ module.exports = () => {
 	const handleError = (req, res, error) => {
 		const message = exceptionMessages(error.code);
 
-		if (!error.skip_log) {
-			EmailService.sendLogEmail({ error, req });
-		}
+		// if (!error.skip_log) {
+		// 	EmailService.sendLogEmail({ error, req });
+		// }
 
 		res.status(error.status || 500).send(error.message || message);
 	};
