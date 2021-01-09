@@ -30,6 +30,10 @@ const auth = async (req, res, next) => {
 
         return next();
     } catch (error) {
+		if (error.message && error.message.includes('jwt expired')) {
+			error.skip_log = true;
+		}
+
         handleError(req, res, error);
     }
 };
