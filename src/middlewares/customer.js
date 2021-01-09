@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const CustomerDao = require('../dao/customer');
 const { api } = require('../../config');
-const { handleError, handleException } = require('../utils')();
+const { handleError, handleException } = require('../utils');
 
 const auth = async (req, res, next) => {
     try {

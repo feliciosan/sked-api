@@ -1,10 +1,10 @@
 const sequelize = require('../db');
 const ScheduleDao = require('../dao/schedule');
 const ServiceDao = require('../dao/service');
-// const EmailService = require('./email')();
+const EmailService = require('./email');
 const moment = require('moment');
+const { handleException } = require('../utils');
 const { Op } = require('sequelize');
-const { handleException } = require('../utils')();
 
 const statusFilter = {
 	'SCHEDULED': {
@@ -53,7 +53,7 @@ const create = async ({ data, transaction }) => {
 		throw handleException('SLOT_UNAVAILABLE');
 	}
 
-	const service = await ServiceDao.find({
+	const serviceResult = await ServiceDao.find({
 		id: data.service_id,
 		account_id: data.account_id,
 		user_id: data.user_id,
@@ -61,33 +61,34 @@ const create = async ({ data, transaction }) => {
 		attributes: ['price']
 	});
 
-	data.price = service.price;
+	data.price = serviceResult.price;
 
-	await ScheduleDao.create(data, { transaction });
-	// const scheduleData = await ScheduleDao.find({ id: schedule.id }, {
-	// 	include: [{
-	// 		model: sequelize.model('account'),
-	// 		attributes: ['name'],
-	// 	}, {
-	// 		model: sequelize.model('user'),
-	// 		attributes: ['name', 'email'],
-	// 		paranoid: false,
-	// 	}, {
-	// 		model: sequelize.model('customer'),
-	// 		attributes: ['name'],
-	// 		paranoid: false,
-	// 	}, {
-	// 		model: sequelize.model('service'),
-	// 		attributes: ['name'],
-	// 		paranoid: false,
-	// 	}],
-	// 	attributes: ['start', 'end', 'date'],
-	// 	nest: true,
-	// 	raw: true,
-	// 	transaction
-	// });
+	const scheduleCreated = await ScheduleDao.create(data, { transaction });
 
-	// await EmailService.sendCreateScheduleEmail({ schedule: scheduleData })
+	const scheduleResult = await ScheduleDao.find({ id: scheduleCreated.id }, {
+		include: [{
+			model: sequelize.model('account'),
+			attributes: ['name'],
+		}, {
+			model: sequelize.model('user'),
+			attributes: ['name', 'email'],
+			paranoid: false,
+		}, {
+			model: sequelize.model('customer'),
+			attributes: ['name'],
+			paranoid: false,
+		}, {
+			model: sequelize.model('service'),
+			attributes: ['name'],
+			paranoid: false,
+		}],
+		attributes: ['start', 'end', 'date'],
+		nest: true,
+		raw: true,
+		transaction
+	});
+
+	await EmailService.sendCreateScheduleEmail({ schedule: scheduleResult });
 
     return true;
 };

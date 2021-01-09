@@ -1,5 +1,5 @@
 const AccountService = require('../services/account');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 
 const find = async (req, res) => {
     try {

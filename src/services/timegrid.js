@@ -1,7 +1,7 @@
 const moment = require('moment');
 const TimegridDao = require('../dao/timegrid');
 const ScheduleDao = require('../dao/schedule');
-const { getTimegridStructure } = require('../utils')();
+const { getTimegridStructure } = require('../utils');
 
 const set = async ({ filter, data, transaction }) => {
     await TimegridDao.remove({

@@ -1,5 +1,5 @@
 const UserService = require('../services/user');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 const sequelize = require('../db');
 
 const profile = async (req, res) => {

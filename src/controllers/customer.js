@@ -1,5 +1,5 @@
 const CustomerService = require('../services/customer');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 const sequelize = require('../db');
 
 const signIn = async (req, res) => {

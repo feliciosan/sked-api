@@ -1,5 +1,5 @@
 const ServiceService = require('../services/service');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 const sequelize = require('../db');
 
 const create = async (req, res) => {

@@ -1,5 +1,5 @@
 const TimegridService = require('../services/timegrid');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 const sequelize = require('../db');
 
 const set = async (req, res) => {

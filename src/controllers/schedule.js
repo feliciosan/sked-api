@@ -1,6 +1,6 @@
 const moment = require('moment');
 const ScheduleService = require('../services/schedule');
-const { handleResponse, handleError } = require('../utils')();
+const { handleResponse, handleError } = require('../services/handle-response');
 const sequelize = require('../db');
 
 const create = async (req, res) => {
