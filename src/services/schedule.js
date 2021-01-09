@@ -88,7 +88,7 @@ const create = async ({ data, transaction }) => {
 		transaction
 	});
 
-	// await EmailService.sendCreateScheduleEmail({ schedule: scheduleResult });
+	await EmailService.sendCreateScheduleEmail({ schedule: scheduleResult });
 
     return true;
 };
