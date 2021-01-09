@@ -147,7 +147,7 @@ const updateStatus = async ({ filter, meta, transaction }) => {
 
 const updateStatusCanceled = async ({ filter, transaction }) => {
 	const changes = {
-		canceled_at: moment().format(),
+		canceled_at: moment().toISOString(),
 	};
 
 	const isFinished = await ScheduleDao.count({
@@ -172,7 +172,7 @@ const updateStatusCanceled = async ({ filter, transaction }) => {
 
 const updateStatusFinished = async ({ filter, transaction }) => {
 	const changes = {
-		finished_at: moment().format(),
+		finished_at: moment().toISOString(),
 	};
 
 	const isCanceled = await ScheduleDao.count({
@@ -197,7 +197,7 @@ const updateStatusFinished = async ({ filter, transaction }) => {
 
 const updateStatusConfirmed = async ({ filter, transaction }) => {
 	const changes = {
-		confirmed_at: moment().format(),
+		confirmed_at: moment().toISOString(),
 	};
 
 	const isCanceledOrFinished= await ScheduleDao.count({

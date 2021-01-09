@@ -9,7 +9,7 @@ const create = async (req, res) => {
     try {
         const params = {
             data: {
-                date: moment(req.body.date).format(),
+                date: moment(req.body.date).toISOString(),
                 start: req.body.start,
                 end: req.body.end,
                 account_id: req.body.account_id,
