@@ -13,7 +13,7 @@ const create = async (req, res) => {
                 user_id: req.user.id,
 				account_id: req.user.account_id,
 				show_price: req.body.show_price || false,
-                price: req.body.price || 0,
+                price: +(req.body.price) || 0,
 			},
 			transaction
 		};
@@ -65,7 +65,7 @@ const update = async (req, res) => {
 				name: req.body.name,
                 duration: req.body.duration,
                 show_price: req.body.show_price || false,
-                price: req.body.price || 0,
+                price: +(req.body.price) || 0,
 			},
 			transaction
 		};
