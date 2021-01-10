@@ -20,7 +20,12 @@ const sendEmailAsync = ({
 		html,
 	};
 
-	return mailgun.messages().send(emailData);
+	if (process.env.NODE_ENV === 'production') {
+		return mailgun.messages().send(emailData);
+	}
+
+	return Promise.resolve();
+
 };
 
 const sendLogEmail = ({
