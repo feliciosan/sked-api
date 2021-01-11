@@ -11,6 +11,7 @@ const ScheduleRouter = require('./schedule');
 const CustomerRouter = require('./customer');
 const ServiceRouter = require('./service');
 const UserRouter = require('./user');
+const ScheduleLockRouter = require('./schedule-lock');
 
 const routes = (app) => {
     app.use(AuthRouter(router));
@@ -20,6 +21,7 @@ const routes = (app) => {
     app.use(ScheduleRouter(router, customerMiddleware.auth, userMiddleware.auth));
     app.use(ServiceRouter(router, userMiddleware.auth));
     app.use(UserRouter(router, userMiddleware.auth));
+    app.use(ScheduleLockRouter(router, userMiddleware.auth));
 };
 
 module.exports = routes;

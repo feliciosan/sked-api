@@ -11,6 +11,10 @@ const handleError = (req, res, error) => {
 		EmailService.sendLogEmail({ error, req });
 	}
 
+	if (process.env.NODE_ENV === 'development') {
+		console.log(error);
+	}
+
 	return res.status(error.status || 500).send(error.message || message);
 };
 
@@ -27,6 +31,7 @@ const exceptionMessages = (code) => {
 		SCHEDULE_CANCELED: 'Este agendamento já foi cancelado.',
 		RECOVER_UNAVAILABLE: 'Não é mais possível resetar sua senha através deste link.',
 		SCHEDULE_CANCELED_OR_FINISHED: 'Este agendamento já foi cancelado ou finalizado.',
+		LOCK_UNAVAILABLE: 'Não foi possível realizar o cadastro. Já existem bloqueios configurados para esta data e hora.'
 	};
 
 	return messages[code] || 'Algum erro aconteceu, tente mais tarde.';
