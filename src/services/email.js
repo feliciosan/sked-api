@@ -25,7 +25,6 @@ const sendEmailAsync = ({
 	}
 
 	return Promise.resolve();
-
 };
 
 const sendLogEmail = ({

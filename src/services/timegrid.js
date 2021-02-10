@@ -81,10 +81,11 @@ const getAvailableSlots = (timegrid, service, schedules) => {
 
             const unavailableSlot = schedules.find((schedule) => {
                 const scheduleStart = moment(schedule.start, timeFormat);
+                const scheduleEnd = moment(schedule.end, timeFormat);
                 const slotStart = moment(slot.start, timeFormat);
                 const slotEnd = moment(slot.end, timeFormat);
 
-                return scheduleStart.isBetween(slotStart, slotEnd, null, '[)');
+                return scheduleStart.isBetween(slotStart, slotEnd, null, '[)') || scheduleEnd.isBetween(slotStart, slotEnd, null, '(]');
             });
 
             if (unavailableSlot) {
